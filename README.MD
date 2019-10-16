@@ -1,4 +1,6 @@
-#How to run lab2 in docker
+How to run lab2 in docker
+=============================
+
 1. Download docker image for hadoop. For example, from https://github.com/big-data-europe/docker-hadoop. Do some configuration (or use default) and start it with
     ```
     # docker-compose up -d  
