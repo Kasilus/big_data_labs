@@ -4,6 +4,9 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.Year;
+import java.util.Date;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -69,9 +72,9 @@ public class AverageCount {
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 			String csvLine = value.toString();
 			String[] csvField = csvLine.split(",");
-			context.write(MARKET_KEY1, new MarketAverage(Double.parseDouble(csvField[6]), 1));
-			context.write(MARKET_KEY2, new MarketAverage(Double.parseDouble(csvField[13]), 1));
-			context.write(MARKET_KEY3, new MarketAverage(Double.parseDouble(csvField[20]), 1));
+			context.write(new Text(MARKET_KEY1 + "_" + csvField[0].split("\\.")[0]), new MarketAverage(Double.parseDouble(csvField[3]), 1)); // max for EURUSD
+			context.write(new Text(MARKET_KEY2 + "_" + csvField[7].split("\\.")[0]), new MarketAverage(Double.parseDouble(csvField[10]), 1)); // max for EURGBP
+			context.write(new Text(MARKET_KEY3 + "_" + csvField[14].split("\\.")[0]), new MarketAverage(Double.parseDouble(csvField[17]), 1)); //max for EURCHF
 		}
 	 }
 
