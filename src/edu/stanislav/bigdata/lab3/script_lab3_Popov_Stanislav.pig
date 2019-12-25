@@ -1,9 +1,9 @@
-%declare YEAR '2014'
+%declare YEAR '$input_year'
 
-forex_history = LOAD 'hdfs://hadoop-master:54310/user/hduser/market/EURUSD_GBP_CHF.csv' USING
+forex_history = LOAD '${input}' USING
    PigStorage(',') as (eurusd_date:chararray, eurusd_time:chararray, eurusd_open:float, eurusd_max:float, eurusd_min:float, eurusd_close:float, eurusd_volume:float,
                        eurgbp_date:chararray, eurgbp_time:chararray, eurgbp_open:float, eurgbp_max:float, eurgbp_min:float, eurgbp_close:float, eurgbp_volume:float,
-		       eurchf_date:chararray, eurchf_time:chararray, eurchf_open:float, eurchf_max:float, eurchf_min:float, eurchf_close:float, eurchf_volume:float);
+		               eurchf_date:chararray, eurchf_time:chararray, eurchf_open:float, eurchf_max:float, eurchf_min:float, eurchf_close:float, eurchf_volume:float);
 
 eurusd_data = FOREACH forex_history GENERATE eurusd_date, eurusd_time, eurusd_open, eurusd_max, eurusd_min, eurusd_close, eurusd_volume;
 eurgbp_data = FOREACH forex_history GENERATE eurgbp_date, eurgbp_time, eurgbp_open, eurgbp_max, eurgbp_min, eurgbp_close, eurgbp_volume;
@@ -23,4 +23,4 @@ eurchf_max_avg = FOREACH eurchf_group GENERATE AVG(eurchf_data.eurchf_max);
 
 result = UNION eurusd_max_avg, eurgbp_max_avg, eurchf_max_avg;
 
-STORE result INTO 'hdfs://hadoop-master:54310/user/hduser/results/Lab03_Popov_Stanislav' USING PigStorage (',');
+STORE result INTO '$output' USING PigStorage (',');

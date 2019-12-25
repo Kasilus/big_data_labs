@@ -21,7 +21,7 @@ How to run lab2 in docker
     Command for edu.stanislav.bigdata.lab2.AverageCount.java (if you are in a root folder of project)
     ```
     # javac -cp "lib/*" -d out\bin src\edu\stanislav\bigdata\lab2\AverageCount.java
-    # jar cvf HadoopMarketAverage.jar -C out/bin/ . 
+    # jar -cvf HadoopMarketAverage.jar -C out/bin/ . 
     # mv .\HadoopMarketAverage.jar out\jar
     ```
 4. Copy input file and jar to hadoop.

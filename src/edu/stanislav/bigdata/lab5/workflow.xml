@@ -1,0 +1,98 @@
+<workflow-app xmlns="uri:oozie:workflow:0.1" name="OozieLab5">
+
+  <start to="jar-mapreduce"/>
+
+  <action name="jar-mapreduce">
+    <java>
+      <job-tracker>${jobTracker}</job-tracker>
+      <name-node>${nameNode}</name-node>
+      <prepare>
+        <delete path="${mapredOutput}"/>
+      </prepare>
+      <configuration>
+        <property>
+          <name>oozie.launcher.mapreduce.map.memory.mb</name>
+          <value>1024</value>
+        </property>
+        <property>
+          <name>oozie.launcher.mapreduce.reduce.memory.mb</name>
+          <value>1024</value>
+        </property>
+        <property>
+          <name>oozie.launcher.yarn.app.mapreduce.am.resource.mb</name>
+          <value>1024</value>
+        </property>
+      </configuration>
+      <main-class>edu.stanislav.bigdata.lab2.AverageCount</main-class>
+      <arg>${nameNode}</arg>
+      <arg>${mapredInput}</arg>
+      <arg>${mapredOutput}</arg>
+    </java>
+    <ok to="pig"/>
+    <error to="fail"/>
+  </action>
+
+  <action name="pig">
+    <pig>
+      <job-tracker>${jobTracker}</job-tracker>
+      <name-node>${nameNode}</name-node>
+      <prepare>
+        <delete path="${pigOutput}"/>
+      </prepare>
+      <configuration>
+        <property>
+          <name>oozie.action.sharelib.for.pig</name>
+          <value>pig</value>
+        </property>
+        <property>
+          <name>mapred.compress.map.output</name>
+          <value>true</value>
+        </property>
+        <property>
+          <name>oozie.action.external.stats.write</name>
+          <value>true</value>
+        </property>
+      </configuration>
+      <script>script_lab3_Popov_Stanislav.pig</script>
+      <param>input_year=${input_year}</param>
+      <param>input=${mapredInput}</param>
+      <param>output=${pigOutput}</param>
+    </pig>
+    <ok to="hive"/>
+    <error to="fail"/>
+  </action>
+
+  <action name="hive">
+    <hive xmlns="uri:oozie:hive-action:0.2">>
+      <job-tracker>${jobTracker}</job-tracker>
+      <name-node>${nameNode}</name-node>
+      <prepare>
+        <delete path="${hiveOutput}"/>
+      </prepare>
+      <configuration>
+        <property>
+          <name>oozie.launcher.mapreduce.map.memory.mb</name>
+          <value>1024</value>
+        </property>
+        <property>
+          <name>oozie.launcher.mapreduce.reduce.memory.mb</name>
+          <value>1024</value>
+        </property>
+        <property>
+          <name>oozie.launcher.yarn.app.mapreduce.am.resource.mb</name>
+          <value>1024</value>
+        </property>
+      </configuration>
+      <script>script_lab4_Popov_Stanislav_hive.sql</script>
+      <param>input_year=${hiveOutput}</param>
+    </hive>
+    <ok to="end" />
+    <error to="fail" />
+  </action>
+
+  <kill name="fail">
+    <message>Map/Reduce failed, error message</message>
+  </kill>
+  <end name="end"/>
+
+</workflow-app>
